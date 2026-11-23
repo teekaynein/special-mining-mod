@@ -1,6 +1,9 @@
 name: build
 on: [push, workflow_dispatch]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-24.04
@@ -43,3 +46,13 @@ jobs:
         with:
           name: server-log
           path: server.log
+      - name: publish jar to "download" branch
+        run: |
+          mkdir -p /tmp/dl && cp build/libs/*.jar /tmp/dl/ && rm -f /tmp/dl/*-sources.jar
+          cp server.log /tmp/dl/ || true
+          cd /tmp/dl
+          git init -q -b download
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -A && git commit -q -m "Build ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" download
