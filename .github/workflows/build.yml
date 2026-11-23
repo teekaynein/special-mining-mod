@@ -1,0 +1,45 @@
+name: build
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v6
+      - name: validate gradle wrapper
+        uses: gradle/actions/wrapper-validation@v6
+      - name: setup jdk
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+      - name: make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: build
+        run: ./gradlew build --console=plain
+      - name: upload mod jar
+        uses: actions/upload-artifact@v7
+        with:
+          name: special-mining-jar
+          path: build/libs/
+      - name: test - start a real 26.3 server with the mod
+        run: |
+          mkdir -p run && echo "eula=true" > run/eula.txt
+          ./gradlew runServer --console=plain > server.log 2>&1 &
+          for i in $(seq 1 150); do
+            if grep -q "Done (" server.log; then echo "SERVER STARTED"; break; fi
+            if grep -qE "Exception in server tick loop|Failed to start the minecraft server|Crash report saved" server.log; then echo "SERVER CRASHED"; break; fi
+            sleep 4
+          done
+          pkill -f java || true
+          sleep 3
+          tail -150 server.log
+          grep -q "Special Mining geladen" server.log
+          grep -q "Done (" server.log
+      - name: upload server log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: server-log
+          path: server.log

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "specialmining",
+  "version": "${version}",
+  "name": "Special Mining",
+  "description": "Verzauberung für Spitzhacke und Schaufel: baut 3x3 ab. Schleichen = nur 1 Block. Vom Bibliothekar und am Zaubertisch.",
+  "authors": [
+    "Teekay"
+  ],
+  "license": "MIT",
+  "icon": "assets/specialmining/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "de.teekay.specialmining.SpecialMining"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}
