@@ -7,5 +7,6 @@ Eine Verzauberung für **Spitzhacke und Schaufel**, die **3x3** abbaut.
 - Kombinierbar mit Glück, Behutsamkeit, Effizienz, Haltbarkeit, Reparatur …
 - **Schleichen** = nur 1 Block
 - Baut nur Blöcke mit ab, für die das Werkzeug passt
+- Kostet nur 1 Haltbarkeit pro Schlag (egal wie viele Blöcke)
 
 Installation: `.jar` in den `mods`-Ordner (Client und Server). Benötigt Fabric Loader und Fabric API für 26.3.

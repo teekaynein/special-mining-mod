@@ -117,8 +117,17 @@ public class SpecialMining implements ModInitializer {
 					if (!level.mayInteract(player, target)) {
 						continue;
 					}
-					// Normaler Abbau: Drops, Glück, Behutsamkeit, Haltbarkeit, Schutzgebiete funktionieren wie immer
+					// Letzter Haltbarkeitspunkt: keine Zusatz-Blöcke, damit das Werkzeug nicht kaputtgeht
+					if (tool.isDamageableItem() && tool.getMaxDamage() - tool.getDamageValue() <= 1) {
+						return;
+					}
+					// Normaler Abbau: Drops, Glück, Behutsamkeit, Schutzgebiete funktionieren wie immer.
+					// Zusatz-Blöcke kosten aber KEINE Haltbarkeit -> nur 1 pro Schlag.
+					int damageBefore = tool.getDamageValue();
 					player.gameMode.destroyBlock(target);
+					if (!tool.isEmpty() && tool.isDamageableItem()) {
+						tool.setDamageValue(damageBefore);
+					}
 				}
 			}
 		} finally {
